@@ -106,11 +106,3 @@ def test_kronecker_delta():
 @XFAIL
 def test_kronecker_delta_failing():
     assert D(i, i + k) == D(0, k)
-
-def test_dual_matrix():
-    from sympy import symbols
-    from sympy import Matrix
-    B_x, B_y, B_z, E_x, E_y, E_z = symbols('B_x B_y B_z E_x E_y E_z ',real=True)
-    F =  Matrix( ((0,E_x,E_y,E_z),(-E_x,0,-B_z,B_y),(-E_y,B_z,0,-B_x),(-E_z,-B_y,B_x,0)) )
-    assert F.dual_matrix() == Matrix( ((0,B_x,B_y,B_z),(-B_x,0,E_z,-E_y),(-B_y,-E_z,0,E_x),(-B_z,E_y,-E_x,0)) )
-    assert eye(3).dual_matrix() == zeros(3)
