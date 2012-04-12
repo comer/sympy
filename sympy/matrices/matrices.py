@@ -2250,14 +2250,7 @@ class MatrixBase(object):
         >>> m = Matrix(2,2,[0, 1, -1, 2])
         >>> m
         [0, 1]
-        [-1, 2]
-        >>> m.is_anti_symmetric()
-        True
-
-        >>> m = Matrix(2,2,[0, y, -y, 0])
-        >>> m
-        [0, y]
-        [-y, 0]
+        [-1, 0]
         >>> m.is_anti_symmetric()
         True
 
@@ -2274,16 +2267,16 @@ class MatrixBase(object):
         [         0, x**2 + 2*x + 1,    y]
         [-(x + 1)**2,              0, x*y]
         [        -y,              -x*y, 0]
-        >>> m.is_symmetric()
+        >>> m.is_anti_symmetric()
         True
 
-        If the matrix is already simplified, you may speed-up is_symmetric()
+        If the matrix is already simplified, you may speed-up is_anti_symmetric()
         test by using 'simplify=False'.
 
-        >>> m.is_symmetric(simplify=False)
+        >>> m.is_anti_symmetric(simplify=False)
         False
         >>> m1 = m.expand()
-        >>> m1.is_symmetric(simplify=False)
+        >>> m1.is_anti_symmetric(simplify=False)
         True
         """
         if not self.is_square:
@@ -2293,7 +2286,7 @@ class MatrixBase(object):
             delta.simplify()
             return delta.equals(self.zeros(self.rows, self.cols))
         else:
-            return self == -self.transpose()
+            return self.equals(-self.transpose())
 
     def is_diagonal(self):
         """
@@ -2445,7 +2438,7 @@ class MatrixBase(object):
         Note that this method fails if the LU decomposition itself
         fails. In particular, if the matrix has no inverse this method
         will fail.
-        
+
         TODO: Implement algorithm for sparse matrices (SFF).
 
         See Also
@@ -2463,13 +2456,12 @@ class MatrixBase(object):
         M, n = self[:,:], self.rows
         p, prod = [] , 1
         l, u, p = M.LUdecomposition()
-        if  len(p)%2 <> 0:
+        if  len(p)%2 != 0:
             prod = -1
-        
+
         for k in range(n):
-            prod = prod*u[k,k]*l[k,k] #for the LU decomp used the diagonal elements of L are unity
-                                      # so this mult by l[k,k] is strictly uncecessary
-       
+            prod = prod*u[k,k]*l[k,k]
+
         return prod.expand()
 
     def adjugate(self, method="berkowitz"):
