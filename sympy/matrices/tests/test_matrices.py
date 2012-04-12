@@ -263,17 +263,7 @@ def test_determinant():
                  ( 0, -2,  5, 0),
                  ( 5,  0,  3, 4) ))
 
-    assert M.det(method="lu_decomposition") == -289
-    
-# the following excluded because inverse does not exist and thus
-# the LU_decomposition fails
-#    M = Matrix(( ( 1,  2,  3,  4),
-#                 ( 5,  6,  7,  8),
-#                 ( 9, 10, 11, 12),
-#                 (13, 14, 15, 16) ))
-#
-#    assert M.det(method="lu_decomposition") == 0
-########################################################    
+    assert M.det(method="lu_decomposition") == -289    
 
     M = Matrix(( (3, 2, 0, 0, 0),
                  (0, 3, 2, 0, 0),
