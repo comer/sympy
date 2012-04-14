@@ -3407,18 +3407,18 @@ class MatrixBase(object):
                     return False
         return True
         
-def dual_matrix(self):
-    """
-    Returns the dual of a matrix, which is:
+    def dual_matrix(self):
+        """
+        Returns the dual of a matrix, which is:
+    
+             (1/2)*levicivita(i,j,k,l)*M(k,l) summed over indices k and l
 
-         (1/2)*levicivita(i,j,k,l)*M(k,l) summed over indices k and l
+        Since the levicivita method is anti_symmetric for any pairwise exchange of indices,
+        the dual of a symmetric matrix is the zero matrix.  Strictly speaking the dual
+        defined here assumes that the 'matrix' M is a contravariant anti_symmetric
+        second rank tensor, so that the dual is a covariant second rank tensor.
 
-    Since the levicivita method is anti_symmetric for any pairwise exchange of indices,
-    the dual of a symmetric matrix is the zero matrix.  Strictly speaking the dual
-    defined here assumes that the 'matrix' M is a contravariant anti_symmetric
-    second rank tensor, so that the dual is a covariant second rank tensor.
-
-    """
+        """
     from sympy import LeviCivita
     M, n = self[:,:], self.rows
     work = zeros(n)
