@@ -4891,7 +4891,7 @@ Matrix.__name__ = "Matrix"
 def dual_matrix(self):
     """
     Returns the dual of a matrix, which is:
-    
+
          (1/2)*levicivita(i,j,k,l)*M(k,l) summed over indices k and l
 
     Since the levicivita method is anti_symmetric for any pairwise exchange of indices,
