@@ -3406,7 +3406,6 @@ class MatrixBase(object):
                 if i!=j and self[i,j] != 0:
                     return False
         return True
-        
     def dual_matrix(self):
         """
         Returns the dual of a matrix, which is:
@@ -3419,19 +3418,30 @@ class MatrixBase(object):
         second rank tensor, so that the dual is a covariant second rank tensor.
 
         """
-    from sympy import LeviCivita
-    M, n = self[:,:], self.rows
-    work = zeros(n)
-    if self.is_symmetric():
-        return work
-    for i in range(n):
-        for j in range(n):
-            accum = 0
-            for k in range(n):
-                for l in range(n):
-                    accum = accum + LeviCivita(i,j,k,l)*M[k,l]
-                work[i,j] = accum/2
-        return work
+        from sympy import LeviCivita
+        M, n = self[:,:], self.rows
+        work = zeros(n)
+        acum1 = 0
+        acum2 = 0
+        if self.is_symmetric():
+            return work
+        for i in range(1,n):
+            for j in range(1,n):
+                acum1 = 0
+                for k in range(1,n):
+                    acum1 = acum1 + LeviCivita(i,j,0,k)*M[0,k]
+                work[i,j] = acum1
+                work[j,i] = -acum1
+            
+        for l in range(1,n):
+            acum2 = 0
+            for a in range(1,n):
+                for b in range(1,n):
+                    acum2 = acum2 -LeviCivita(0,l,a,b)*M[a,b]
+            work[0,l] = acum2/2
+            work[l,0] = -acum2/2
+    
+        return work        
 
 class MutableMatrix(MatrixBase):
 
@@ -4918,12 +4928,15 @@ def dual_matrix(self):
     """
     Returns the dual of a matrix, which is:
 
-         (1/2)*levicivita(i,j,k,l)*M(k,l) summed over indices k and l
+         -(1/2)*levicivita(i,j,k,l)*M(k,l) summed over indices k and l
 
     Since the levicivita method is anti_symmetric for any pairwise exchange of indices,
     the dual of a symmetric matrix is the zero matrix.  Strictly speaking the dual
     defined here assumes that the 'matrix' M is a contravariant anti_symmetric
-    second rank tensor, so that the dual is a covariant second rank tensor.
+    second rank tensor, and the resulting dual is a contravariant  second rank tensor. These 
+    definitions are taken from Misner, Thorne, and Wheeler, Gravitation, 1973. It is assumed
+    that the metric tensor of Minkowski spacetime is given in Cartesian coordinates and has 
+    nonzero diagonal components (-1,1,1,1).
 
     """
     from sympy import LeviCivita
@@ -4937,5 +4950,5 @@ def dual_matrix(self):
             for k in range(n):
                 for l in range(n):
                     accum = accum + LeviCivita(i,j,k,l)*M[k,l]
-                work[i,j] = accum/2
+                work[i,j] = -accum/2
         return work
