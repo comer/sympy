@@ -2247,13 +2247,13 @@ class MatrixBase(object):
         ========
 
         >>> from sympy import Matrix
-        >>> m = Matrix(2,2,[0, 1, -1, 2])
+        >>> m = Matrix(2,2,[0, 1, -1, 0])
         >>> m
         [0, 1]
         [-1, 0]
         >>> m.is_anti_symmetric()
         True
-
+>       >>> x,y = symbols('x y')
         >>> m = Matrix(2,3,[0, 0, x, -y, 0, 0])
         >>> m
         [0, 0, x]
@@ -2262,12 +2262,12 @@ class MatrixBase(object):
         False
 
         >>> from sympy.abc import x, y
-        >>> m = Matrix(3,3,[0, x**2 + 2*x + 1, y, -(x + 1)**2 , y, y, -y, 0, 0])
-        >>> m
+        >>> m1 = Matrix(3,3,[0, x**2 + 2*x + 1, y, -x**2 - 2*x - 1 , 0, x*y, -y, -x*y, 0])
+        >>> m1
         [         0, x**2 + 2*x + 1,    y]
-        [-(x + 1)**2,              0, x*y]
+        [-x**2 - 2*x - 1,              0, x*y]
         [        -y,              -x*y, 0]
-        >>> m.is_anti_symmetric()
+        >>> m1.is_anti_symmetric()
         True
 
         If the matrix is already simplified, you may speed-up is_anti_symmetric()
@@ -2346,14 +2346,14 @@ class MatrixBase(object):
         Possible values for "method":
           bareis ... det_bareis
           berkowitz ... berkowitz_det
-          lu_decomposition ... det_LU_decomposition
+          lu_decomposition ... det_LU
 
         See Also
         ========
 
         det_bareis
         berkowitz_det
-        det_lu_decomposition
+        det_LU
         """
 
         # if methods were made internal and all determinant calculations
@@ -2367,7 +2367,7 @@ class MatrixBase(object):
             return self.det_bareis()
         elif method == "berkowitz":
             return self.berkowitz_det()
-        elif method == "lu_decomposition":
+        elif method == "det_LU":
             return self.det_LU_decomposition()
         else:
             raise ValueError("Determinant method unrecognized")
@@ -3406,12 +3406,11 @@ class MatrixBase(object):
                 if i!=j and self[i,j] != 0:
                     return False
         return True
-    def dual_matrix(self):
+        
+    def dual(self):
         """
-        Returns the dual of a matrix, which is:
-    
+        Returns the dual of a matrix, which is:    
              (1/2)*levicivita(i,j,k,l)*M(k,l) summed over indices k and l
-
         Since the levicivita method is anti_symmetric for any pairwise exchange of indices,
         the dual of a symmetric matrix is the zero matrix.  Strictly speaking the dual
         defined here assumes that the 'matrix' M is a contravariant anti_symmetric
@@ -4924,31 +4923,3 @@ def rot_axis1(theta):
 Matrix = MutableMatrix
 Matrix.__name__ = "Matrix"
 
-def dual_matrix(self):
-    """
-    Returns the dual of a matrix, which is:
-
-         -(1/2)*levicivita(i,j,k,l)*M(k,l) summed over indices k and l
-
-    Since the levicivita method is anti_symmetric for any pairwise exchange of indices,
-    the dual of a symmetric matrix is the zero matrix.  Strictly speaking the dual
-    defined here assumes that the 'matrix' M is a contravariant anti_symmetric
-    second rank tensor, and the resulting dual is a contravariant  second rank tensor. These 
-    definitions are taken from Misner, Thorne, and Wheeler, Gravitation, 1973. It is assumed
-    that the metric tensor of Minkowski spacetime is given in Cartesian coordinates and has 
-    nonzero diagonal components (-1,1,1,1).
-
-    """
-    from sympy import LeviCivita
-    M, n = self[:,:], self.rows
-    work = zeros(n)
-    if self.is_symmetric():
-        return work
-    for i in range(n):
-        for j in range(n):
-            accum = 0
-            for k in range(n):
-                for l in range(n):
-                    accum = accum + LeviCivita(i,j,k,l)*M[k,l]
-                work[i,j] = -accum/2
-        return work
