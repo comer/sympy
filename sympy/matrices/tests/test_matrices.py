@@ -2236,4 +2236,3 @@ def test_dual():
     assert F.dual().equals(Fd)
     assert eye(3).dual().equals(zeros(3))
     assert F.dual().dual().equals(-F)
-    

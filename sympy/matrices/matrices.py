@@ -2253,7 +2253,7 @@ class MatrixBase(object):
         [-1, 0]
         >>> m.is_anti_symmetric()
         True
->       >>> x,y = symbols('x y')
+        >>> x,y = symbols('x y')
         >>> m = Matrix(2,3,[0, 0, x, -y, 0, 0])
         >>> m
         [0, 0, x]
